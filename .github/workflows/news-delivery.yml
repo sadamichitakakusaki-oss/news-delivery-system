@@ -1,0 +1,29 @@
+name: 毎朝ニュース配信
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: ライブラリインストール
+        run: pip install -r requirements.txt
+
+      - name: ニュース配信スクリプト実行
+        env:
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: python main.py
